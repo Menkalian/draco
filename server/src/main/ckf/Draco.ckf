@@ -1,0 +1,15 @@
+Draco
+  Build
+    Version
+    Timestamp
+  Database
+    Type
+    Version
+    Timestamp
+    CreatedAt
+  Telemetrie
+    Report
+      Author
+        Name
+        Email
+      Message
