@@ -85,7 +85,7 @@ fun main(args: Array<String>) {
                 "",
                 GuesstimateQuestion(
                     -1, "Kilian", 2040, Language.GERMAN, Difficulty.EASY,
-                    Category.SCIENCE_COMPUTERS, "HOW", 32, listOf()
+                    Category.SCIENCE_COMPUTERS, "HOW", 32.toDouble(), "", listOf()
                 ),
                 SuggestionState.CREATED,
                 listOf()
@@ -128,7 +128,7 @@ fun main(args: Array<String>) {
     client.question.apply {
         ErrorHandler.latch = CountDownLatch(1)
         create(
-            GuesstimateQuestion(-1, "asda", 1020, Language.GERMAN, Difficulty.HARD, Category.CELEBRITIES, "Whichen't", 40, listOf()),
+            GuesstimateQuestion(-1, "asda", 1020, Language.GERMAN, Difficulty.HARD, Category.CELEBRITIES, "Whichen't", 40.0, "", listOf()),
             ErrorHandler::onSuccess,
             ErrorHandler::onDracoError
         )

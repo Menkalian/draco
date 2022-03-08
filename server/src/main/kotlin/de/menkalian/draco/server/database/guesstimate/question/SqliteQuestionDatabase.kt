@@ -72,6 +72,7 @@ class SqliteQuestionDatabase(
                     this.category = question.category.findDao().id
                     this.question = question.question
                     this.answer = question.answer
+                    this.answerUnit = question.answerUnit
                 }
 
             question.hints.forEach {
@@ -149,6 +150,7 @@ class SqliteQuestionDatabase(
         success = success && setCreatedAt(id, updated.createdAt) != null
         success = success && setQuestion(id, updated.question) != null
         success = success && setAnswer(id, updated.answer) != null
+        success = success && setAnswerUnit(id, updated.answerUnit) != null
         success = success && setLanguage(id, updated.language) != null
         success = success && setCategory(id, updated.category) != null
         success = success && setDifficulty(id, updated.difficulty) != null
@@ -232,7 +234,7 @@ class SqliteQuestionDatabase(
         }
     }
 
-    override fun setAnswer(id: Int, answer: Long): GuesstimateQuestion? {
+    override fun setAnswer(id: Int, answer: Double): GuesstimateQuestion? {
         ensureOpen()
         return transaction(dbConnection) {
             createAllTables()
@@ -240,6 +242,18 @@ class SqliteQuestionDatabase(
             QuestionData.QuestionDataEntry
                 .findById(id)
                 ?.apply { this.answer = answer }
+                ?.toQuestionObject()
+        }
+    }
+
+    override fun setAnswerUnit(id: Int, answerUnit: String): GuesstimateQuestion? {
+        ensureOpen()
+        return transaction(dbConnection) {
+            createAllTables()
+
+            QuestionData.QuestionDataEntry
+                .findById(id)
+                ?.apply { this.answerUnit = answerUnit }
                 ?.toQuestionObject()
         }
     }

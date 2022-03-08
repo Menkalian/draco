@@ -15,7 +15,8 @@ object QuestionData : IntIdTable() {
     val category = reference("category", CategoryData.id)
 
     val question = text("question")
-    val answer = long("answer")
+    val answer = double("answer")
+    val answerUnit = text("answerUnit")
 
     class QuestionDataEntry(id: EntityID<Int>) : IntEntity(id) {
         companion object : IntEntityClass<QuestionDataEntry>(QuestionData)
@@ -29,6 +30,7 @@ object QuestionData : IntIdTable() {
 
         var question by QuestionData.question
         var answer by QuestionData.answer
+        var answerUnit by QuestionData.answerUnit
 
         val hints by HintData.HintDataEntry referrersOn HintData.question
 
@@ -42,6 +44,7 @@ object QuestionData : IntIdTable() {
                 CategoryData.CategoryDataEntry[category].toEnum(),
                 question,
                 answer,
+                answerUnit,
                 hints.map { it.toHintString() }.toList()
             )
         }

@@ -89,7 +89,7 @@ class UserRestController(val userDatabase: IUserDatabase) {
 
     private fun <T> checkForRights(authToken: String, requestType: String, vararg requiredRights: UserRight, onAuthorized: () -> T): T {
         val authenticatedUser = userDatabase.getUser(authToken.authTokenHash())
-            ?: throw MissingAuthenticationException()
+            ?: throw MissingAuthenticationException().apply { logger().warn("No Authentication found.") }
         logger().info("Received \"$requestType\"-request by ${authenticatedUser.name}")
         logger().debug("Requires rights: ${requiredRights.toList()}")
 

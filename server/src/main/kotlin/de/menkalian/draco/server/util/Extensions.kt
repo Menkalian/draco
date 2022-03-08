@@ -1,5 +1,7 @@
 package de.menkalian.draco.server.util
 
+import de.menkalian.draco.data.game.values.TransferableValue
+import de.menkalian.draco.data.game.values.Values
 import org.apache.tomcat.util.codec.binary.Base64
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -20,3 +22,14 @@ fun String.authTokenHash() = Base64
             .decodeBase64(this)
             .sha512()
     )
+
+fun Values.addStringList(
+    list: List<String>,
+    amountKey: String,
+    valueKeySupplier: (Int) -> String
+) {
+    this[amountKey] = TransferableValue.from(list.size)
+    list.forEachIndexed { idx, s ->
+        this[valueKeySupplier(idx + 1)] = TransferableValue.from(s)
+    }
+}

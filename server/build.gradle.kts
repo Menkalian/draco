@@ -17,15 +17,22 @@ springBoot {
 
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
+val ktorVersion = "1.6.7"
+fun ktor(module: String) = "io.ktor:ktor-$module:$ktorVersion"
+
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation("org.springframework.boot:spring-boot-starter-mail")
     implementation("org.springframework.boot:spring-boot-starter-websocket")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
     implementation(kotlin("stdlib-jdk8"))
     implementation(kotlin("reflect"))
+
+    implementation(ktor("server-cio"))
+    implementation(ktor("websockets"))
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
 
     implementation(project(":shared:data"))
 

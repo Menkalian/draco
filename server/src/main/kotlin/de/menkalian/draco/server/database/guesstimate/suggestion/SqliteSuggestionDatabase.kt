@@ -77,6 +77,7 @@ class SqliteSuggestionDatabase(
                     this.category = suggestion.suggestedQuestion.category.findDao().id
                     this.question = suggestion.suggestedQuestion.question
                     this.answer = suggestion.suggestedQuestion.answer
+                    this.answerUnit = suggestion.suggestedQuestion.answerUnit
                 }
 
             val daoSuggestion = SuggestionData.SuggestionDataEntry
@@ -144,6 +145,7 @@ class SqliteSuggestionDatabase(
         success = success && setCategory(uuid, updated.suggestedQuestion.category) != null
         success = success && setQuestion(uuid, updated.suggestedQuestion.question) != null
         success = success && setAnswer(uuid, updated.suggestedQuestion.answer) != null
+        success = success && setAnswerUnit(uuid, updated.suggestedQuestion.answerUnit) != null
 
         success = success && clearNotes(uuid) != null
         updated.notes.forEach {
@@ -313,7 +315,7 @@ class SqliteSuggestionDatabase(
         return getSuggestion(uuid)
     }
 
-    override fun setAnswer(uuid: String, answer: Long): Suggestion? {
+    override fun setAnswer(uuid: String, answer: Double): Suggestion? {
         ensureOpen()
         transaction(dbConnection) {
             createAllTables()
@@ -325,6 +327,24 @@ class SqliteSuggestionDatabase(
                 QuestionData.QuestionDataEntry
                     .findById(questionId)
                     ?.apply { this.answer = answer }
+                    ?.toQuestionObject()
+            }
+        }
+        return getSuggestion(uuid)
+    }
+
+    override fun setAnswerUnit(uuid: String, answerUnit: String): Suggestion? {
+        ensureOpen()
+        transaction(dbConnection) {
+            createAllTables()
+            val questionId = SuggestionData.SuggestionDataEntry
+                .findById(UUID.fromString(uuid))
+                ?.suggestedQuestion
+
+            if (questionId != null) {
+                QuestionData.QuestionDataEntry
+                    .findById(questionId)
+                    ?.apply { this.answerUnit = answerUnit }
                     ?.toQuestionObject()
             }
         }

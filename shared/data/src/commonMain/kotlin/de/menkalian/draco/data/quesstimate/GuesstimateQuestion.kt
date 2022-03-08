@@ -14,6 +14,7 @@ data class GuesstimateQuestion(
     val category: Category,
 
     val question: String,
-    val answer: Long,
+    val answer: Double,
+    val answerUnit: String,
     val hints: List<String>
 )

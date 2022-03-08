@@ -9,5 +9,8 @@ class MissingAuthenticationException : RuntimeException()
 @ResponseStatus(HttpStatus.UNAUTHORIZED)
 class UserRightsNotSufficientException : RuntimeException()
 
+@ResponseStatus(HttpStatus.BAD_REQUEST)
+class DuplicateUserNameException : RuntimeException()
+
 @ResponseStatus(HttpStatus.NOT_FOUND)
 class NotFoundException : RuntimeException()

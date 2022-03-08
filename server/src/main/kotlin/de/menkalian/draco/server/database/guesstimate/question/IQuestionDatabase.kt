@@ -24,7 +24,8 @@ interface IQuestionDatabase : IDatabase {
     fun setDifficulty(id: Int, difficulty: Difficulty): GuesstimateQuestion?
     fun setCategory(id: Int, category: Category): GuesstimateQuestion?
     fun setQuestion(id: Int, question: String): GuesstimateQuestion?
-    fun setAnswer(id: Int, answer: Long): GuesstimateQuestion?
+    fun setAnswer(id: Int, answer: Double): GuesstimateQuestion?
+    fun setAnswerUnit(id: Int, answerUnit: String): GuesstimateQuestion?
     fun clearHints(id: Int): GuesstimateQuestion?
     fun addHint(id: Int, hint: String): GuesstimateQuestion?
 

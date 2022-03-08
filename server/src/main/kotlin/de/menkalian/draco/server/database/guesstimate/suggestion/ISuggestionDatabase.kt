@@ -28,7 +28,8 @@ interface ISuggestionDatabase : IDatabase {
     fun setDifficulty(uuid: String, difficulty: Difficulty): Suggestion?
     fun setCategory(uuid: String, category: Category): Suggestion?
     fun setQuestion(uuid: String, question: String): Suggestion?
-    fun setAnswer(uuid: String, answer: Long): Suggestion?
+    fun setAnswer(uuid: String, answer: Double): Suggestion?
+    fun setAnswerUnit(uuid: String, answerUnit: String): Suggestion?
     fun clearHints(uuid: String): Suggestion?
     fun addHint(uuid: String, hint: String): Suggestion?
 
