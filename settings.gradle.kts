@@ -2,20 +2,25 @@ rootProject.name = "draco"
 
 // Backend
 include(
-    ":server"
-)
-
-// Frontend
-include(
-    ":client:android",
-    ":client:android:app",
+    ":server-server"
 )
 
 // Shared
 include(
-    ":shared:data",
-    ":shared:restclient"
+    ":shared-data",
+    ":shared-utils",
 )
+
+// Frontend
+include(
+    ":client-baseclient",
+
+    ":client:android",
+    ":client:android:app",
+
+    ":client-web",
+)
+
 
 pluginManagement {
     repositories {

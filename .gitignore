@@ -1,7 +1,9 @@
 .gradle
 **/build
+local.properties
 
 **/.data
+**/.logs
 **/.sqlite
 
 .idea
