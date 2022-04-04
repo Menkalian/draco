@@ -19,9 +19,9 @@ import java.util.UUID
 
 @Service
 class LobbyManager(
-    @Value("\${draco.host.address}") override val serverUrl: String,
-    @Value("\${draco.socket.port}") override val wsPort: Int,
-    @Value("\${draco.socket.path}") override val wsPath: String,
+    @Value("\${draco.socket.host}") override val serverUrl: String,
+    @Value("\${draco.internal.socket.port}") override val wsPort: Int,
+    @Value("\${draco.internal.socket.path}") override val wsPath: String,
     private val serverProperties: ServerProperties,
     private val websocketHandler: IWebsocketHandler,
     private val questionDatabase: IQuestionDatabase,

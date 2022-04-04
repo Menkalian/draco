@@ -1,0 +1,54 @@
+{
+  "properties" : [
+    {
+      "name" : "draco.sqlite.database.path",
+      "type" : "java.lang.String",
+      "description" : "File path where the databases are created. May be relative or absolute."
+    },
+    {
+      "name" : "draco.telemetrie.export.path",
+      "type" : "java.lang.String",
+      "description" : "File path where the telemetrie reports are put."
+    },
+    {
+      "name" : "draco.internal.socket.port",
+      "type" : "java.lang.Integer",
+      "description" : "Port where the websocket is started."
+    },
+    {
+      "name" : "draco.internal.socket.path",
+      "type" : "java.lang.String",
+      "description" : "Path where the websocket is started."
+    },
+    {
+      "name" : "draco.rest.tls",
+      "type" : "java.lang.Boolean",
+      "description" : "Whether the REST-API can be reached via tls externally."
+    },
+    {
+      "name" : "draco.rest.host",
+      "type" : "java.lang.String",
+      "description" : "Externally reachable host for the REST-API."
+    },
+    {
+      "name" : "draco.rest.port",
+      "type" : "java.lang.Integer",
+      "description" : "Externally reachable port for the REST-API."
+    },
+    {
+      "name" : "draco.socket.tls",
+      "type" : "java.lang.Boolean",
+      "description" : "File path where the databases are created. May be relative or absolute."
+    },
+    {
+      "name" : "draco.socket.host",
+      "type" : "java.lang.String",
+      "description" : "Whether the Socket can be reached via tls externally."
+    },
+    {
+      "name" : "draco.socket.port",
+      "type" : "java.lang.Integer",
+      "description" : "Externally reachable port for the Socket."
+    }
+  ]
+}

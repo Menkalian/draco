@@ -28,7 +28,7 @@ import java.util.UUID
 import java.util.concurrent.atomic.AtomicLong
 
 @Service
-class KtorWebsocketHandler(@Value("\${draco.socket.port}") port: Int, @Value("\${draco.socket.path}") path: String) : IWebsocketHandler {
+class KtorWebsocketHandler(@Value("\${draco.internal.socket.port}") port: Int, @Value("\${draco.internal.socket.path}") path: String) : IWebsocketHandler {
     companion object {
         val msgIdCounter = AtomicLong(0L)
 
@@ -53,7 +53,7 @@ class KtorWebsocketHandler(@Value("\${draco.socket.port}") port: Int, @Value("\$
 
         acknowledgeHandlers.forEach { addPackageHandler(it.key, it.value) }
 
-        websocketServer = embeddedServer(CIO, port = 8081) {
+        websocketServer = embeddedServer(CIO, port = port) {
             install(WebSockets)
             routing {
                 addWebsocketRoute(path)
@@ -62,7 +62,7 @@ class KtorWebsocketHandler(@Value("\${draco.socket.port}") port: Int, @Value("\$
     }
 
     private fun Routing.addWebsocketRoute(path: String) {
-        webSocket("/socket") {
+        webSocket(path) {
             val uuid: String
 
             synchronized(activeSessions) {
