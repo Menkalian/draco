@@ -1,0 +1,1249 @@
+{
+  "openapi" : "3.0.0",
+  "servers" : [
+    {
+      "url" : "https://api.draco.menkalian.de",
+      "description" : "Default public production server"
+    },
+    {
+      "url" : "http://localhost:8080",
+      "description" : "Your local running instance"
+    }
+  ],
+  "info" : {
+    "description" : "`draco` is a project to develop an application to play the game \"quizpoker\".\nPart of that project is the creation of an database for so called \"guesstimate\"-questions.\nThis database is the part which is probably most useful to other applications. \n\nThis file shows the API-Endpoint which can be integrated in your application.\nThere is no API-Token required for the most usefull read-endpoints, but please try to keep the requests on a reasonable level.\n\nThe project also provides a `client-baseclient`-module which compiles to JVM and native code, so you can use it directly in your applications.",
+    "version" : "1.0.0",
+    "title" : "Draco",
+    "termsOfService" : "https://draco.menkalian.de/legal/tos",
+    "license" : {
+      "name" : "MIT",
+      "url" : "https://opensource.org/licenses/MIT"
+    }
+  },
+  "tags" : [
+    {
+      "name" : "guesstimate",
+      "description" : "All API Endpoints for access to \"guesstimate\" questions."
+    },
+    {
+      "name" : "telemetrie",
+      "description" : "Telemetrie-Endpoints to report issues (used primarily for the clients implemented in the `draco`-project).\nIf you have any problems with the usage of the api, please open an issue on GitHub."
+    },
+    {
+      "name" : "user",
+      "description" : "API-Endpoints for the user-system."
+    },
+    {
+      "name" : "game",
+      "description" : "Endpoints to connect or join a game.\nThe game communication is documented seperately"
+    }
+  ],
+  "paths" : {
+    "/guesstimate/question" : {
+      "put" : {
+        "summary" : "Inserts a new (verified) question into the database",
+        "description" : "If you want to add a question, do not use this endpoint. Use the `PUT /guesstimate/suggestion` endpoint instead.",
+        "parameters" : [],
+        "operationId" : "createQuestion",
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GuesstimateQuestion"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "No Authentication found or user not authorized"
+          }
+        },
+        "tags" : [
+          "guesstimate"
+        ],
+        "security" : [
+          {
+            "auth_token" : []
+          }
+        ],
+        "requestBody" : {
+          "required" : true,
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/GuesstimateQuestion"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/guesstimate/question/all" : {
+      "get" : {
+        "summary" : "Reads all available questions from the server",
+        "description" : "This endpoint requires authentication/authorization, since it is basically a database dump.\nTo query questions use the `GET /guesstimate/questions` endpoint.",
+        "parameters" : [],
+        "operationId" : "readAllQuestions",
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/GuesstimateQuestion"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "No Authentication found or user not authorized"
+          }
+        },
+        "tags" : [
+          "guesstimate"
+        ],
+        "security" : [
+          {
+            "auth_token" : []
+          }
+        ]
+      }
+    },
+    "/guesstimate/question/{id}" : {
+      "post" : {
+        "summary" : "Update an existing question",
+        "description" : "",
+        "parameters" : [
+          {
+            "name" : "id",
+            "in" : "path",
+            "required" : true,
+            "schema" : {
+              "type" : "string"
+            },
+            "description" : "Id of the question"
+          }
+        ],
+        "operationId" : "updateQuestion",
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GuesstimateQuestion"
+                }
+              }
+            }
+          }
+        },
+        "tags" : [
+          "guesstimate"
+        ],
+        "security" : [
+          {
+            "auth_token" : []
+          }
+        ],
+        "requestBody" : {
+          "required" : true,
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/GuesstimateQuestion"
+              }
+            }
+          }
+        }
+      },
+      "get" : {
+        "summary" : "Read an specific question",
+        "description" : "",
+        "parameters" : [
+          {
+            "name" : "id",
+            "in" : "path",
+            "required" : true,
+            "schema" : {
+              "type" : "string"
+            },
+            "description" : "Id of the question"
+          }
+        ],
+        "operationId" : "readQuestion",
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GuesstimateQuestion"
+                }
+              }
+            }
+          }
+        },
+        "tags" : [
+          "guesstimate"
+        ]
+      },
+      "delete" : {
+        "summary" : "Deletes/Removes an existing question",
+        "description" : "",
+        "parameters" : [
+          {
+            "name" : "id",
+            "in" : "path",
+            "required" : true,
+            "schema" : {
+              "type" : "string"
+            },
+            "description" : "Id of the question"
+          }
+        ],
+        "operationId" : "deleteQuestion",
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "boolean"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "No Authentication found or user not authorized"
+          }
+        },
+        "tags" : [
+          "guesstimate"
+        ],
+        "security" : [
+          {
+            "auth_token" : []
+          }
+        ]
+      }
+    },
+    "/guesstimate/questions" : {
+      "get" : {
+        "summary" : "",
+        "description" : "Reads random questions, which match the filter parameters, from the database",
+        "parameters" : [
+          {
+            "name" : "amount",
+            "in" : "query",
+            "required" : false,
+            "schema" : {
+              "type" : "string",
+              "default" : "10"
+            },
+            "description" : "Amount to querry"
+          },
+          {
+            "name" : "difficulty",
+            "in" : "query",
+            "required" : false,
+            "schema" : {
+              "$ref" : "#/components/schemas/QuestionDifficulty"
+            },
+            "description" : "Filters by question difficulty. To query for multiple difficulties, use the request body."
+          },
+          {
+            "name" : "category",
+            "in" : "query",
+            "required" : false,
+            "schema" : {
+              "$ref" : "#/components/schemas/QuestionCategory"
+            },
+            "description" : "Filters by question category. To query for multiple categories, use the request body."
+          },
+          {
+            "name" : "language",
+            "in" : "query",
+            "required" : false,
+            "schema" : {
+              "$ref" : "#/components/schemas/QuestionLanguage"
+            },
+            "description" : "Filters by question language. To query for multiple languages, use the request body."
+          }
+        ],
+        "operationId" : "queryQuestions",
+        "responses" : {
+          "200" : {
+            "description" : "Default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/GuesstimateQuestion"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags" : [
+          "guesstimate"
+        ],
+        "requestBody" : {
+          "required" : false,
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/QuestionQuery"
+              }
+            }
+          },
+          "description" : "(optional) filter parameters. If parameters are given via this object and the URL-Parameters, the URL-Parameters are preferred."
+        },
+        "security" : []
+      }
+    },
+    "/telemetrie/upload" : {
+      "post" : {
+        "summary" : "",
+        "description" : "",
+        "parameters" : [],
+        "operationId" : "uploadReport",
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          }
+        },
+        "tags" : [
+          "telemetrie"
+        ],
+        "requestBody" : {
+          "required" : true,
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/TelemetrieReport"
+              }
+            }
+          }
+        },
+        "security" : []
+      }
+    },
+    "/guesstimate/suggestion" : {
+      "put" : {
+        "summary" : "Create a new suggestion",
+        "description" : "",
+        "parameters" : [],
+        "operationId" : "createSuggestion",
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Suggestion"
+                }
+              }
+            }
+          }
+        },
+        "tags" : [
+          "guesstimate"
+        ],
+        "requestBody" : {
+          "required" : true,
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Suggestion"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/guesstimate/suggestion/all" : {
+      "get" : {
+        "summary" : "Reads all suggestions",
+        "description" : "",
+        "parameters" : [],
+        "operationId" : "readAllSuggestions",
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Suggestion"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "No Authentication found or user not authorized"
+          }
+        },
+        "tags" : [
+          "guesstimate"
+        ],
+        "security" : [
+          {
+            "auth_token" : []
+          }
+        ]
+      }
+    },
+    "/guesstimate/suggestion/{uuid}" : {
+      "post" : {
+        "summary" : "Update an suggestion",
+        "description" : "",
+        "parameters" : [
+          {
+            "name" : "uuid",
+            "in" : "path",
+            "required" : true,
+            "schema" : {
+              "type" : "string"
+            },
+            "description" : "UUID of the suggestion"
+          }
+        ],
+        "operationId" : "updateSuggestion",
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Suggestion"
+                }
+              }
+            }
+          }
+        },
+        "tags" : [
+          "guesstimate"
+        ],
+        "security" : [
+          {
+            "auth_token" : []
+          }
+        ],
+        "requestBody" : {
+          "required" : true,
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Suggestion"
+              }
+            }
+          }
+        }
+      },
+      "get" : {
+        "summary" : "Read current data of an suggestion",
+        "description" : "",
+        "parameters" : [
+          {
+            "name" : "uuid",
+            "in" : "path",
+            "required" : true,
+            "schema" : {
+              "type" : "string"
+            },
+            "description" : "UUID of the suggestion"
+          }
+        ],
+        "operationId" : "readSuggestion",
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Suggestion"
+                }
+              }
+            }
+          }
+        },
+        "tags" : [
+          "guesstimate"
+        ],
+        "security" : [
+          {
+            "auth_token" : []
+          }
+        ]
+      },
+      "delete" : {
+        "summary" : "Delete a suggestion",
+        "description" : "",
+        "parameters" : [
+          {
+            "name" : "uuid",
+            "in" : "path",
+            "required" : true,
+            "schema" : {
+              "type" : "string"
+            },
+            "description" : "UUID of the suggestion"
+          }
+        ],
+        "operationId" : "deleteSuggestion",
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "boolean"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "No Authentication found or user not authorized"
+          }
+        },
+        "tags" : [
+          "guesstimate"
+        ],
+        "security" : [
+          {
+            "auth_token" : []
+          }
+        ]
+      }
+    },
+    "/guesstimate/suggestion/unread" : {
+      "get" : {
+        "summary" : "Read an unattended suggestion",
+        "description" : "",
+        "parameters" : [],
+        "operationId" : "getUnreadSuggestions",
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Suggestion"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "No valid user authenticated"
+          }
+        },
+        "tags" : [
+          "guesstimate"
+        ],
+        "security" : [
+          {
+            "auth_token" : []
+          }
+        ]
+      }
+    },
+    "/guesstimate/suggestion/{uuid}/close" : {
+      "post" : {
+        "summary" : "Closes an suggestion",
+        "description" : "",
+        "parameters" : [
+          {
+            "name" : "uuid",
+            "in" : "path",
+            "required" : true,
+            "schema" : {
+              "type" : "string"
+            },
+            "description" : "UUID of the suggestion"
+          }
+        ],
+        "operationId" : "closeSuggestion",
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Suggestion"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "User not authenticated or authorized"
+          }
+        },
+        "tags" : [
+          "guesstimate"
+        ],
+        "security" : [
+          {
+            "auth_token" : []
+          }
+        ]
+      }
+    },
+    "/guesstimate/suggestion/{uuid}/accept" : {
+      "post" : {
+        "summary" : "Accepts an suggestion and creates a new question from it",
+        "description" : "",
+        "parameters" : [
+          {
+            "name" : "uuid",
+            "in" : "path",
+            "required" : true,
+            "schema" : {
+              "type" : "string"
+            },
+            "description" : "UUID of the suggestion"
+          }
+        ],
+        "operationId" : "acceptSuggestion",
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Suggestion"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "User not authenticated or authorized"
+          }
+        },
+        "tags" : [
+          "guesstimate"
+        ],
+        "security" : [
+          {
+            "auth_token" : []
+          }
+        ]
+      }
+    },
+    "/guesstimate/suggestion/{uuid}/decline" : {
+      "post" : {
+        "summary" : "Declines an suggestion (marks as \"needs work\")",
+        "description" : "",
+        "parameters" : [
+          {
+            "name" : "uuid",
+            "in" : "path",
+            "required" : true,
+            "schema" : {
+              "type" : "string"
+            },
+            "description" : "UUID of the suggestion"
+          }
+        ],
+        "operationId" : "declineSuggestion",
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Suggestion"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "User not authenticated or authorized"
+          }
+        },
+        "tags" : [
+          "guesstimate"
+        ],
+        "security" : [
+          {
+            "auth_token" : []
+          }
+        ]
+      }
+    },
+    "/guesstimate/suggestion/{uuid}/comment" : {
+      "put" : {
+        "summary" : "Comments on a suggestion",
+        "description" : "",
+        "parameters" : [
+          {
+            "name" : "uuid",
+            "in" : "path",
+            "required" : true,
+            "schema" : {
+              "type" : "string"
+            },
+            "description" : "UUID of the suggestion"
+          }
+        ],
+        "operationId" : "addComment",
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Suggestion"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "User not authenticated or authorized"
+          }
+        },
+        "tags" : [
+          "guesstimate"
+        ],
+        "security" : [
+          {
+            "auth_token" : []
+          }
+        ],
+        "requestBody" : {
+          "required" : true,
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SuggestionComment"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user" : {
+      "put" : {
+        "summary" : "Create a new user",
+        "description" : "",
+        "parameters" : [],
+        "operationId" : "createUser",
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/EntitledUser"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "No Authentication found or user not authorized"
+          }
+        },
+        "tags" : [
+          "user"
+        ],
+        "security" : [
+          {
+            "auth_token" : []
+          }
+        ],
+        "requestBody" : {
+          "required" : true,
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/EntitledUser"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/all" : {
+      "get" : {
+        "summary" : "Reads all users",
+        "description" : "",
+        "parameters" : [],
+        "operationId" : "readAllUsers",
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/EntitledUser"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "No Authentication found or user not authorized"
+          }
+        },
+        "tags" : [
+          "user"
+        ],
+        "security" : [
+          {
+            "auth_token" : []
+          }
+        ]
+      }
+    },
+    "/user/{id}" : {
+      "post" : {
+        "summary" : "Update an user",
+        "description" : "",
+        "parameters" : [
+          {
+            "name" : "id",
+            "in" : "path",
+            "required" : true,
+            "schema" : {
+              "type" : "string"
+            },
+            "description" : "Id of the user"
+          }
+        ],
+        "operationId" : "updateUser",
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/EntitledUser"
+                }
+              }
+            }
+          }
+        },
+        "tags" : [
+          "user"
+        ],
+        "security" : [
+          {
+            "auth_token" : []
+          }
+        ],
+        "requestBody" : {
+          "required" : true,
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/EntitledUser"
+              }
+            }
+          }
+        }
+      },
+      "get" : {
+        "summary" : "Read data of an user",
+        "description" : "",
+        "parameters" : [
+          {
+            "name" : "id",
+            "in" : "path",
+            "required" : true,
+            "schema" : {
+              "type" : "string"
+            },
+            "description" : "Id of the user"
+          }
+        ],
+        "operationId" : "readUser",
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/EntitledUser"
+                }
+              }
+            }
+          }
+        },
+        "tags" : [
+          "user"
+        ],
+        "security" : [
+          {
+            "auth_token" : []
+          }
+        ]
+      },
+      "delete" : {
+        "summary" : "Deletes an user",
+        "description" : "",
+        "parameters" : [
+          {
+            "name" : "id",
+            "in" : "path",
+            "required" : true,
+            "schema" : {
+              "type" : "string"
+            },
+            "description" : "Id of the user"
+          }
+        ],
+        "operationId" : "deleteUser",
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "boolean"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "No Authentication found or user not authorized"
+          }
+        },
+        "tags" : [
+          "user"
+        ],
+        "security" : [
+          {
+            "auth_token" : []
+          }
+        ]
+      }
+    },
+    "/user/me" : {
+      "get" : {
+        "summary" : "Read current user",
+        "description" : "",
+        "parameters" : [],
+        "operationId" : "getMyUser",
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/EntitledUser"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "No valid user authenticated"
+          }
+        },
+        "tags" : [
+          "user"
+        ],
+        "security" : [
+          {
+            "auth_token" : []
+          }
+        ]
+      }
+    }
+  },
+  "externalDocs" : {
+    "description" : "Check the [GitHub-Page](https://github.com/menkalian/draco) for an overview of all available documentation.",
+    "url" : "https://docs.draco.menkalian.de/api/server-server.html"
+  },
+  "components" : {
+    "schemas" : {
+      "QuestionCategory" : {
+        "type" : "string",
+        "enum" : [
+          "GENERAL_KNOWLEDGE",
+          "ENTERTAINMENT_BOOKS",
+          "ENTERTAINMENT_FILM",
+          "ENTERTAINMENT_MUSIC",
+          "ENTERTAINMENT_MUSICALS_THEATRES",
+          "ENTERTAINMENT_TELEVISION",
+          "ENTERTAINMENT_VIDEO_GAMES",
+          "ENTERTAINMENT_BOARD_GAMES",
+          "ENTERTAINMENT_COMICS",
+          "ENTERTAINMENT_JAPANESE_ANIME_MANGA",
+          "ENTERTAINMENT_CARTOON_ANIMATIONS",
+          "SCIENCE_AND_NATURE",
+          "SCIENCE_COMPUTERS",
+          "SCIENCE_MATHEMATICS",
+          "SCIENCE_GADGETS",
+          "MYTHOLOGY",
+          "SPORTS",
+          "GEOGRAPHY",
+          "HISTORY",
+          "POLITICS",
+          "ART",
+          "CELEBRITIES",
+          "ANIMALS",
+          "VEHICLES"
+        ]
+      },
+      "QuestionDifficulty" : {
+        "type" : "string",
+        "enum" : [
+          "EASY",
+          "MEDIUM",
+          "HARD"
+        ]
+      },
+      "QuestionLanguage" : {
+        "type" : "string",
+        "enum" : [
+          "ENGLISH",
+          "GERMAN"
+        ]
+      },
+      "GuesstimateQuestion" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer"
+          },
+          "author" : {
+            "type" : "string"
+          },
+          "createdAt" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "language" : {
+            "type" : "string",
+            "enum" : [
+              "ENGLISH",
+              "GERMAN"
+            ]
+          },
+          "difficulty" : {
+            "type" : "string",
+            "enum" : [
+              "EASY",
+              "MEDIUM",
+              "HARD"
+            ]
+          },
+          "category" : {
+            "type" : "string",
+            "enum" : [
+              "GENERAL_KNOWLEDGE",
+              "ENTERTAINMENT_BOOKS",
+              "ENTERTAINMENT_FILM",
+              "ENTERTAINMENT_MUSIC",
+              "ENTERTAINMENT_MUSICALS_THEATRES",
+              "ENTERTAINMENT_TELEVISION",
+              "ENTERTAINMENT_VIDEO_GAMES",
+              "ENTERTAINMENT_BOARD_GAMES",
+              "ENTERTAINMENT_COMICS",
+              "ENTERTAINMENT_JAPANESE_ANIME_MANGA",
+              "ENTERTAINMENT_CARTOON_ANIMATIONS",
+              "SCIENCE_AND_NATURE",
+              "SCIENCE_COMPUTERS",
+              "SCIENCE_MATHEMATICS",
+              "SCIENCE_GADGETS",
+              "MYTHOLOGY",
+              "SPORTS",
+              "GEOGRAPHY",
+              "HISTORY",
+              "POLITICS",
+              "ART",
+              "CELEBRITIES",
+              "ANIMALS",
+              "VEHICLES"
+            ]
+          },
+          "question" : {
+            "type" : "string"
+          },
+          "answer" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "answerUnit" : {
+            "type" : "string"
+          },
+          "hints" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      },
+      "QuestionQuery" : {
+        "type" : "object",
+        "properties" : {
+          "amount" : {
+            "type" : "integer",
+            "minimum" : 0,
+            "maximum" : 50
+          },
+          "languages" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/QuestionLanguage"
+            }
+          },
+          "categories" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/QuestionCategory"
+            }
+          },
+          "difficulties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/QuestionDifficulty"
+            }
+          }
+        }
+      },
+      "SuggestionState" : {
+        "type" : "string",
+        "enum" : [
+          "CREATED",
+          "NEEDS_WORK",
+          "UPDATED",
+          "CLOSED",
+          "ACCEPTED"
+        ]
+      },
+      "Suggestion" : {
+        "type" : "object",
+        "properties" : {
+          "uuid" : {
+            "type" : "string"
+          },
+          "suggestedQuestion" : {
+            "$ref" : "#/components/schemas/GuesstimateQuestion"
+          },
+          "state" : {
+            "$ref" : "#/components/schemas/SuggestionState"
+          },
+          "notes" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SuggestionComment"
+            }
+          }
+        }
+      },
+      "SuggestionComment" : {
+        "type" : "object",
+        "properties" : {
+          "author" : {
+            "type" : "string"
+          },
+          "comment" : {
+            "type" : "string"
+          },
+          "timestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "UserRight" : {
+        "type" : "string",
+        "enum" : [
+          "ADMIN",
+          "USER_READ",
+          "USER_CREATE",
+          "USER_UPDATE",
+          "USER_DELETE",
+          "SUGGESTION_READ",
+          "SUGGESTION_UPDATE",
+          "SUGGESTION_DELETE",
+          "SUGGESTION_COMMENT_CREATE",
+          "QUESTION_READ",
+          "QUESTION_CREATE",
+          "QUESTION_UPDATE",
+          "QUESTION_DELETE"
+        ]
+      },
+      "EntitledUser" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer"
+          },
+          "accessHash" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "rights" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/UserRight"
+            }
+          }
+        }
+      },
+      "TelemetrieReport" : {
+        "type" : "object",
+        "properties" : {
+          "reporterName" : {
+            "type" : "string",
+            "nullable" : true
+          },
+          "reporterEmail" : {
+            "type" : "string",
+            "nullable" : true
+          },
+          "reportText" : {
+            "type" : "string",
+            "nullable" : true
+          },
+          "logs" : {
+            "type" : "array",
+            "items" : {
+              "type" : "object",
+              "properties" : {
+                "logFileName" : {
+                  "type" : "string"
+                },
+                "logDomain" : {
+                  "type" : "string"
+                },
+                "date" : {
+                  "type" : "string",
+                  "format" : "date-time"
+                },
+                "logData" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes" : {
+      "auth_token" : {
+        "type" : "apiKey",
+        "name" : "auth",
+        "in" : "header"
+      }
+    },
+    "links" : {},
+    "callbacks" : {}
+  },
+  "security" : []
+}
