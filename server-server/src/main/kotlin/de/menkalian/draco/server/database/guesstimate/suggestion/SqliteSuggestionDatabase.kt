@@ -90,6 +90,10 @@ class SqliteSuggestionDatabase(
                 addNote(daoSuggestion.id.value.toString(), it)
             }
 
+            suggestion.suggestedQuestion.hints.forEach {
+                addHint(daoSuggestion.id.value.toString(), it)
+            }
+
             daoSuggestion.toSuggestionObject()
         }
     }
