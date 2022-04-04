@@ -5,9 +5,193 @@
 # Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
 # Note that environment variables can be set in several places
 # See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
+#stages:
+#- test
 stages:
-- test
-sast:
-  stage: test
+  - lib-build
+  - lib-test
+  - lib-publish
+  - server-build
+  - server-test
+  - server-publish
+  - client-build
+  - client-test
+  - client-publish
+  - test
+  - finalize
+
+cache:
+  key: ${CI_PROJECT_ID}
+  paths:
+    - .gradle
+
+default:
+  image: openjdk:17
+  before_script:
+    - chmod +x gradlew
+
+.buildstage:
+  script:
+    - ./gradlew ${GRADLE_MODULE}:publishToMavenLocal
+  artifacts:
+    paths:
+      - ./*/build
+    expire_in: 1 week
+
+.teststage:
+  script:
+    - ./gradlew ${GRADLE_MODULE}:check
+  artifacts:
+    paths:
+      - ./*/build/reports/*
+    reports:
+      junit:
+        - ./*/build/test-results/test/**/TEST-*.xml
+
+.publishstage:
+  script:
+    - ./gradlew ${GRADLE_MODULE}:publish
+  artifacts:
+    paths:
+      - ./*/build/libs/
+    expire_in: 1 month
+  only:
+    - tags
+
+.dockerstage:
+  tags:
+    - docker
+  script:
+    - docker login docker.menkalian.de --username $DOCKER_REG_USER --password $DOCKER_REG_PASSWORD
+    - cd $GRADLE_MODULE
+    - docker build -t docker.menkalian.de/draco/${GRADLE_MODULE}:${CI_COMMIT_SHORT_SHA}
+    - docker tag docker.menkalian.de/draco/${GRADLE_MODULE}:${CI_COMMIT_SHORT_SHA} docker.menkalian.de/draco/${GRADLE_MODULE}:latest
+    - docker push docker.menkalian.de/draco/${GRADLE_MODULE}:${CI_COMMIT_SHORT_SHA}
+    - docker push docker.menkalian.de/draco/${GRADLE_MODULE}:latest
+  only:
+    - tags
+
+shared-utils-build:
+  stage: lib-build
+  variables:
+    GRADLE_MODULE: shared-utils
+  extends: .buildstage
+
+shared-utils-test:
+  stage: lib-test
+  variables:
+    GRADLE_MODULE: shared-utils
+  extends: .teststage
+
+shared-utils-publish:
+  stage: lib-publish
+  variables:
+    GRADLE_MODULE: shared-utils
+  extends: .publishstage
+
+shared-data-build:
+  stage: lib-build
+  variables:
+    GRADLE_MODULE: shared-data
+  extends: .buildstage
+
+shared-data-test:
+  stage: lib-test
+  variables:
+    GRADLE_MODULE: shared-data
+  extends: .teststage
+
+shared-data-publish:
+  stage: lib-publish
+  variables:
+    GRADLE_MODULE: shared-data
+  extends: .publishstage
+
+server-server-build:
+  stage: server-build
+  variables:
+    GRADLE_MODULE: server-server
+  extends: .buildstage
+
+server-server-test:
+  stage: server-test
+  variables:
+    GRADLE_MODULE: server-server
+  extends: .teststage
+
+server-server-publish:
+  stage: server-publish
+  variables:
+    GRADLE_MODULE: server-server
+  extends: .publishstage
+
+server-server-docker:
+  stage: server-publish
+  variables:
+    GRADLE_MODULE: server-server
+  extends: .dockerstage
+
+client-baseclient-build:
+  stage: client-build
+  variables:
+    GRADLE_MODULE: client-baseclient
+  extends: .buildstage
+
+client-baseclient-test:
+  stage: client-test
+  variables:
+    GRADLE_MODULE: client-baseclient
+  extends: .teststage
+
+client-baseclient-publish:
+  stage: client-publish
+  variables:
+    GRADLE_MODULE: client-baseclient
+  extends: .publishstage
+
+client-web-build:
+  stage: client-build
+  variables:
+    GRADLE_MODULE: client-web
+  extends: .buildstage
+
+client-web-test:
+  stage: client-test
+  variables:
+    GRADLE_MODULE: client-web
+  extends: .teststage
+
+client-web-publish:
+  stage: client-publish
+  variables:
+    GRADLE_MODULE: client-web
+  extends: .publishstage
+
+client-web-docker:
+  stage: client-publish
+  variables:
+    GRADLE_MODULE: client-web
+  extends: .dockerstage
+
+accumulate-coverage:
+  stage: finalize
+  script:
+    - awk -F"," '{ instructions += $4 + $5; covered += $5 } END { print covered, "/", instructions, " instructions covered"; print 100*covered/instructions, "% covered" }' ./*/build/reports/jacoco/test/jacocoTestReport.csv
+
+pages:
+  stage: finalize
+  only:
+    - tags
+  script:
+    - ./gradlew dokkaHtmlMultiModule
+    - cp -r build/dokka/htmlMultiModule public
+  artifacts:
+    paths:
+      - public
+
 include:
-- template: Security/SAST.gitlab-ci.yml
+  - template: Security/SAST.gitlab-ci.yml
+
+spotbugs-sast:
+  stage: test
+
