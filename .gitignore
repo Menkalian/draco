@@ -8,3 +8,7 @@ local.properties
 
 .idea
 **/*.iml
+
+client-web/frontend/generated
+client-web/node_modules
+client-web/webpack.generated.js
