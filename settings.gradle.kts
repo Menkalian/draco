@@ -14,9 +14,9 @@ include(
 // Frontend
 include(
     ":client-baseclient",
-
-    ":client:android",
-    ":client:android:app",
+//
+//    ":client:android",
+//    ":client:android:app",
 
     ":client-web",
 )

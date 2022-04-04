@@ -4,44 +4,16 @@ plugins {
 }
 
 kotlin {
-    val hostOs = System.getProperty("os.name")
-    val isMingwX64 = hostOs.startsWith("Windows")
-    val nativeTarget = when {
-        hostOs == "Mac OS X" -> macosX64("native")
-        hostOs == "Linux"    -> linuxX64("native")
-        isMingwX64           -> mingwX64("native")
-        else                 -> null
-    }
-
-    nativeTarget?.apply {
-        binaries {
-            sharedLib()
-        }
-    }
-    js {
-        binaries.library()
-        useCommonJs()
-        browser()
-        nodejs()
-    }
-    jvm()
-
     val ktorVersion = "1.6.7"
     fun ktor(module: String) = "io.ktor:ktor-$module:$ktorVersion"
 
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(kotlin("stdlib-common"))
-                implementation(kotlin("reflect"))
-
                 implementation(ktor("client-core"))
                 implementation(ktor("client-serialization"))
                 implementation(ktor("client-logging"))
                 implementation(ktor("client-websockets"))
-
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.3.2")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
 
                 implementation(project(":shared-data"))
                 implementation(project(":shared-utils"))
@@ -71,5 +43,16 @@ kotlin {
 //                implementation("ch.qos.logback:logback-classic:1.2.10")
 //            }
 //        }
+    }
+}
+
+afterEvaluate {
+    // Build fat jar, since transitive dependencies do not work properly at the moment
+    tasks.getByName("jvmJar", Jar::class) {
+        from(
+            configurations
+                .getByName("jvmRuntimeClasspath")
+                .map { if (it.isDirectory) it else zipTree(it) }
+        )
     }
 }

@@ -4,13 +4,11 @@ plugins {
     id("org.springframework.boot") version "2.6.3"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
 
-    id("com.vaadin") version "23.0.0"
+    id("com.vaadin")
 
     kotlin("jvm")
     kotlin("plugin.spring")
     kotlin("plugin.jpa")
-
-    id("de.menkalian.vela.keygen")
 }
 
 springBoot {
@@ -40,9 +38,15 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation(kotlin("reflect"))
 
+    // Include coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
 
-//    implementation(project(":client-baseclient"))
+    implementation(project(":client-baseclient")) {
+        isTransitive = true
+    }
+    implementation(project(":shared-data"))
+    implementation(project(":shared-utils"))
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
@@ -64,5 +68,12 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
+tasks.bootJar.configure {
+    dependsOn(tasks.vaadinBuildFrontend)
+}
+
 vaadin {
+    gradle.taskGraph.whenReady {
+        productionMode = hasTask(tasks.vaadinBuildFrontend.get())
+    }
 }

@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+
 plugins {
     // Kotlin
     val kotlinVersion = "1.6.10"
@@ -8,6 +10,8 @@ plugins {
     kotlin("plugin.spring") version kotlinVersion apply false
     kotlin("plugin.jpa") version kotlinVersion apply false
     kotlin("plugin.serialization") version kotlinVersion apply false
+
+    id("com.vaadin") version "23.0.0" apply false
 
     id("com.android.application") apply false
 
@@ -20,5 +24,72 @@ allprojects {
 
     repositories {
         mavenCentral()
+    }
+
+    // Configure multiplatform projects
+    pluginManager.withPlugin("org.jetbrains.kotlin.multiplatform") {
+        extensions.getByType(KotlinMultiplatformExtension::class).apply {
+            jvm {
+                withJava()
+            }
+
+            js {
+                binaries.library()
+                useCommonJs()
+                browser()
+                nodejs()
+            }
+
+            val hostOs = System.getProperty("os.name")
+            logger.info("Configuring for build on $hostOs")
+
+            val isMingwX64 = hostOs.startsWith("Windows")
+            val nativeTarget = when {
+                hostOs == "Mac OS X" -> macosX64("native")
+                hostOs == "Linux"    -> linuxX64("native")
+                isMingwX64           -> mingwX64("native")
+                else                 -> null
+            }
+
+            if (nativeTarget == null) {
+                logger.error("Native compilation on your OS is not supported.")
+            }
+
+            // Configure targets
+            nativeTarget?.apply {
+                binaries {
+                    sharedLib()
+                }
+            }
+
+            sourceSets {
+                getByName("commonMain") {
+                    dependencies {
+                        implementation(kotlin("stdlib-common"))
+                        implementation(kotlin("reflect"))
+
+                        // Include coroutines
+                        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
+
+                        // Include serialization if the plugin is there
+                        pluginManager.withPlugin("org.jetbrains.kotlin.plugin.serialization") {
+                            implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.3.2")
+                            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
+                        }
+                    }
+                }
+
+                getByName("commonTest") {
+                    dependencies {
+                        implementation(kotlin("test-common"))
+                        implementation(kotlin("test-annotations-common"))
+                    }
+                }
+            }
+        }
+    }
+
+    tasks.withType(AbstractCopyTask::class) {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
 }
