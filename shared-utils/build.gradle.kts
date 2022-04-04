@@ -1,6 +1,8 @@
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
+
+    `maven-publish`
 }
 
 kotlin {
@@ -15,5 +17,8 @@ afterEvaluate {
                 .getByName("jvmRuntimeClasspath")
                 .map { if (it.isDirectory) it else zipTree(it) }
         )
+    }
+
+    publishing {
     }
 }

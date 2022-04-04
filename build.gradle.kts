@@ -89,6 +89,21 @@ allprojects {
         }
     }
 
+    pluginManager.withPlugin("maven-publish") {
+        extensions.getByType(PublishingExtension::class.java).apply {
+            repositories {
+                maven {
+                    url = uri("https://artifactory.menkalian.de/artifactory/draco")
+                    name = "artifactory-menkalian"
+                    credentials {
+                        username = System.getenv("MAVEN_REPO_USER")
+                        password = System.getenv("MAVEN_REPO_PASS")
+                    }
+                }
+            }
+        }
+    }
+
     tasks.withType(AbstractCopyTask::class) {
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }

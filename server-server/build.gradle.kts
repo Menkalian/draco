@@ -9,6 +9,8 @@ plugins {
     kotlin("plugin.jpa")
 
     id("de.menkalian.vela.keygen")
+
+    `maven-publish`
 }
 
 springBoot {
@@ -62,4 +64,14 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            artifact(tasks.jar)
+            artifact(tasks.kotlinSourcesJar)
+            artifact(tasks.bootJar)
+        }
+    }
 }

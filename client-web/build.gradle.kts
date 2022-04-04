@@ -9,6 +9,8 @@ plugins {
     kotlin("jvm")
     kotlin("plugin.spring")
     kotlin("plugin.jpa")
+
+    `maven-publish`
 }
 
 springBoot {
@@ -75,5 +77,15 @@ tasks.bootJar.configure {
 vaadin {
     gradle.taskGraph.whenReady {
         productionMode = hasTask(tasks.vaadinBuildFrontend.get())
+    }
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            artifact(tasks.jar)
+            artifact(tasks.kotlinSourcesJar)
+            artifact(tasks.bootJar)
+        }
     }
 }
