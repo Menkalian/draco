@@ -59,6 +59,7 @@ default:
     - tags
 
 .dockerstage:
+  image: docker:20
   tags:
     - docker
   script:
