@@ -65,7 +65,7 @@ default:
   script:
     - docker login docker.menkalian.de --username $DOCKER_REG_USER --password $DOCKER_REG_PASSWORD
     - cd $GRADLE_MODULE
-    - docker build -t docker.menkalian.de/draco/${GRADLE_MODULE}:${CI_COMMIT_SHORT_SHA}
+    - docker build -t docker.menkalian.de/draco/${GRADLE_MODULE}:${CI_COMMIT_SHORT_SHA} .
     - docker tag docker.menkalian.de/draco/${GRADLE_MODULE}:${CI_COMMIT_SHORT_SHA} docker.menkalian.de/draco/${GRADLE_MODULE}:latest
     - docker push docker.menkalian.de/draco/${GRADLE_MODULE}:${CI_COMMIT_SHORT_SHA}
     - docker push docker.menkalian.de/draco/${GRADLE_MODULE}:latest
