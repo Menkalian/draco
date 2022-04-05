@@ -10,7 +10,10 @@ plugins {
     kotlin("plugin.spring")
     kotlin("plugin.jpa")
 
+    id("org.jetbrains.dokka")
+
     `maven-publish`
+    jacoco
 }
 
 springBoot {
@@ -72,6 +75,8 @@ tasks.withType<Test> {
 
 tasks.bootJar.configure {
     dependsOn(tasks.vaadinBuildFrontend)
+
+    archiveClassifier.set("boot")
 }
 
 vaadin {

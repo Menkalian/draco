@@ -1,3 +1,4 @@
+import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
 plugins {
@@ -10,6 +11,8 @@ plugins {
     kotlin("plugin.spring") version kotlinVersion apply false
     kotlin("plugin.jpa") version kotlinVersion apply false
     kotlin("plugin.serialization") version kotlinVersion apply false
+
+    id("org.jetbrains.dokka") version kotlinVersion
 
     id("com.vaadin") version "23.0.0" apply false
 
@@ -89,6 +92,25 @@ allprojects {
         }
     }
 
+    pluginManager.withPlugin("org.jetbrains.dokka") {
+        dependencies.add("dokkaHtmlPlugin", "org.jetbrains.dokka:kotlin-as-java-plugin:1.4.32")
+    }
+
+    pluginManager.withPlugin("jacoco") {
+        tasks.withType(JacocoReport::class.java) {
+            dependsOn(tasks.getByName("test"))
+
+            reports {
+                xml.required.set(true)
+                csv.required.set(true)
+            }
+        }
+
+        tasks.getByName("check") {
+            dependsOn(tasks.withType(JacocoReport::class.java))
+        }
+    }
+
     pluginManager.withPlugin("maven-publish") {
         extensions.getByType(PublishingExtension::class.java).apply {
             repositories {
@@ -104,7 +126,29 @@ allprojects {
         }
     }
 
+    pluginManager.withPlugin("org.jetbrains.dokka") {
+        val kotlinVersion = "1.6.10"
+        dependencies.add("dokkaHtmlPlugin", "org.jetbrains.dokka:kotlin-as-java-plugin:$kotlinVersion")
+        tasks.withType(DokkaTask::class.java).configureEach {
+            try {
+                dokkaSourceSets.named("main") {
+                    sourceLink {
+                        localDirectory.set(project.file("src/main/kotlin"))
+                        remoteUrl.set(uri("https://github.com/menkalian/draco/blob/main/${projectDir.relativeTo(rootProject.projectDir)}/src/main/kotlin").toURL())
+                        remoteLineSuffix.set("#L")
+                    }
+                }
+            } catch (_: Exception) {
+            }
+        }
+    }
+
     tasks.withType(AbstractCopyTask::class) {
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
+
+}
+
+tasks.dokkaHtmlMultiModule.configure {
+    moduleName.set("Draco Source Documentation")
 }

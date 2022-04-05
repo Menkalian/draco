@@ -195,4 +195,6 @@ include:
 
 spotbugs-sast:
   stage: test
+  variables:
+    SAST_JAVA_VERSION: 11
 

@@ -8,9 +8,12 @@ plugins {
     kotlin("plugin.spring")
     kotlin("plugin.jpa")
 
+    id("org.jetbrains.dokka")
+
     id("de.menkalian.vela.keygen")
 
     `maven-publish`
+    jacoco
 }
 
 springBoot {
@@ -74,4 +77,8 @@ publishing {
             artifact(tasks.bootJar)
         }
     }
+}
+
+tasks.bootJar.configure {
+    archiveClassifier.set("boot")
 }
