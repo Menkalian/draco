@@ -50,10 +50,10 @@ jobs:
         with:
           context: './server-server'
           push: true
-          tags: ${{ env.DOCKER_REGISTRY}}/crater/server-server:latest,${{ env.DOCKER_REGISTRY}}/crater/server-server:${{ github.run_id }}
+          tags: ${{ env.DOCKER_REGISTRY}}/draco/server-server:latest,${{ env.DOCKER_REGISTRY}}/draco/server-server:${{ github.run_id }}
       - name: Build and push server Docker image
         uses: docker/build-push-action@ac9327eae2b366085ac7f6a2d02df8aa8ead720a
         with:
           context: './client-web'
           push: true
-          tags: ${{ env.DOCKER_REGISTRY}}/crater/server-server:latest,${{ env.DOCKER_REGISTRY}}/crater/server-server:${{ github.run_id }}
+          tags: ${{ env.DOCKER_REGISTRY}}/draco/client-web:latest,${{ env.DOCKER_REGISTRY}}/draco/client-web:${{ github.run_id }}
