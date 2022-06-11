@@ -22,7 +22,6 @@ springBoot {
 
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
-
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation(kotlin("reflect"))

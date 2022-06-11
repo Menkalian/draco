@@ -5,6 +5,11 @@ package de.menkalian.draco.data
 object Draco {
     private const val BASE = "Draco"
 
+    object Event {
+        private const val BASE = Draco.BASE + ".Event"
+        const val Data = BASE + ".Data"
+    }
+
     object Action {
         private const val BASE = Draco.BASE + ".Action"
 

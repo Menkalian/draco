@@ -4,6 +4,8 @@ enum class PackageType {
     HEARTBEAT,
     HEARTBEAT_ACK,
 
+    EVENT,
+
     CLIENT_HELLO,
     CLIENT_MSG,
     CLIENT_MSG_ACK,

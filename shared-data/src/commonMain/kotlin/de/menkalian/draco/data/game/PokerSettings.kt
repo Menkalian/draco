@@ -22,18 +22,20 @@ class PokerSettings constructor() : ValueHolder() {
         this.publicity = builder.publicity
         this.defaultStartScore = builder.defaultStartScore
         this.maxQuestionCount = builder.maxQuestionCount
-        this.timeoutMs = builder.timeoutMs
-        this.kickWhenBroke = builder.kickWhenBroke
-        this.showHelpWarnings = builder.showHelpWarnings
-        this.allowLateJoin = builder.allowLateJoin
-        this.blindRaiseStrategy = builder.blindRaiseStrategy
-        this.answerRevealStrategy = builder.answerRevealStrategy
-        this.timeoutStrategy = builder.timeoutStrategy
-        this.lateJoinBehaviour = builder.lateJoinBehaviour
-        this.blindLevels = builder.blindLevels
         this.allowedCategories = builder.allowedCategories
         this.allowedDifficulties = builder.allowedDifficulties
         this.allowedLanguages = builder.allowedLanguages
+        this.showHelpWarnings = builder.showHelpWarnings
+
+        this.allowLateJoin = builder.allowLateJoin
+        this.kickWhenBroke = builder.kickWhenBroke
+        this.lateJoinBehaviour = builder.lateJoinBehaviour
+        this.answerRevealStrategy = builder.answerRevealStrategy
+
+        this.timeoutMs = builder.timeoutMs
+        this.blindRaiseStrategy = builder.blindRaiseStrategy
+        this.timeoutStrategy = builder.timeoutStrategy
+        this.blindLevels = builder.blindLevels
     }
 
     var lobbyName: String by Delegates.observable("") { _, _, new ->
